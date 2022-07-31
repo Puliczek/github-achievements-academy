@@ -8,6 +8,19 @@
 
 # GitHub Achievements Acadamy 🏆
 
+
+## 📝 Description
+
+In 15 minutes get 7 achivements on Github! 
+
+## 🤓 For who?
+For everone who wants to learn more about GitHub platform and get those cool icons on their GitHub profile:
+
+![image](https://user-images.githubusercontent.com/12344862/182033658-e05f3fe8-ba44-4469-a082-99af2697d641.png)
+
+
+# Let's start
+
 # 1) Quickdraw
 
 ### 🧠 Learn: **Create and close your issue**
@@ -25,7 +38,7 @@
 
 **🎉 Congratulations - you just got an Quickdraw achievment! 😎**
 
-# 2) Show your support - give a ⭐️ if you liked the content
+# 2) 🤝 Show your support - give a ⭐️ if you liked the content
 
 ![chrome_GAkki5iwFr](https://user-images.githubusercontent.com/12344862/182029606-8651f5ce-0af6-4d99-b60d-6e03bdd43ae4.gif)
 
@@ -88,6 +101,19 @@ If you are interested in programming and security - Follow me **@Puliczek** on
 `Starstruck` | <img width="148" alt="quickdraw-default" src="https://user-images.githubusercontent.com/12344862/182032498-29dad621-0c89-4a9d-9674-fdba96c58d97.png">|Created a repository that has 16 stars
 
 ### Learn how to --- and get an Quickdraw achievment!
+
+
+# 💻 Useful links
+
+- [GitHub Profile Achievements 🏆 by Schweinepriester - Learn more about github profile achievements](https://github.com/Schweinepriester/github-profile-achievements)
+
+# 😎 Contributing
+👍🎉 First off, thanks for taking the time to contribute! 🎉👍
+
+If there is missing achievement, feel free to add it by PR or create issue.
+
+Thanks! 🦄
+
 
 
 
