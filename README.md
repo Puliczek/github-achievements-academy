@@ -21,7 +21,7 @@ For everone who wants to learn more about GitHub platform and get those cool ico
 
 # Let's start
 
-todo
+todo.
 
 
 
