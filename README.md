@@ -8,7 +8,6 @@
 
 # GitHub Achievements Acadamy 🏆
 
-
 ## 📝 Description
 
 In 15 minutes get 7 achivements on Github! 
@@ -17,12 +16,3 @@ In 15 minutes get 7 achivements on Github!
 For everone who wants to learn more about GitHub platform and get those cool icons on their GitHub profile:
 
 ![image](https://user-images.githubusercontent.com/12344862/182033658-e05f3fe8-ba44-4469-a082-99af2697d641.png)
-
-
-# Let's start
-
-todo.
-
-
-
-
