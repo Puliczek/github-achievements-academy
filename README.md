@@ -14,5 +14,5 @@ For everyone who wants to learn more about the GitHub platform and get these coo
 
 Start here -> [https://githubachievements.com/](https://githubachievements.com/)
 
-Yeah, one day I'll open-source the website, ,ust don't have time right now :(
+Yeah, one day I'll open-source the website, just don't have time right now :(
 
