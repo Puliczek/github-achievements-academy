@@ -2,7 +2,7 @@
 
 ## 📝 Description
 
-In 15 minutes get 7 achievements on GitHub! 
+In 15 minutes, get 7 achievements on GitHub! 
 
 ## 🤓 For whom?
 For everyone who wants to learn more about the GitHub platform and get these cool badges on their GitHub profile:
