@@ -1,0 +1,133 @@
+name: Close stale Quickdraw issues
+
+# Practice issues are meant to be closed by their author within 5 minutes to earn
+# the Quickdraw achievement. The ones that stay open are simply forgotten, so this
+# sweeps them up once a day.
+#
+# Closing an issue here does NOT earn anyone the achievement - that requires the
+# author to close it themselves within 5 minutes. This is housekeeping only.
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      days:
+        description: 'Close matching issues older than this many days'
+        required: false
+        default: '7'
+      max_issues:
+        description: 'Maximum issues to close in one run'
+        required: false
+        default: '50'
+      dry_run:
+        description: 'List what would be closed without closing it'
+        type: boolean
+        required: false
+        default: true
+
+permissions:
+  issues: write
+
+concurrency:
+  group: close-stale-quickdraw-issues
+  cancel-in-progress: false
+
+jobs:
+  close-stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v9
+        env:
+          DAYS: ${{ inputs.days || '7' }}
+          MAX_ISSUES: ${{ inputs.max_issues || '50' }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+        with:
+          script: |
+            const days = Number(process.env.DAYS);
+            const maxIssues = Number(process.env.MAX_ISSUES);
+            const dryRun = process.env.DRY_RUN === 'true';
+
+            // Issues opened from the Quickdraw template carry the `Quickdraw` label.
+            // The title is checked too, for issues opened without the template.
+            const TITLE_RE = /\[quickdraw\]|open and close issues on github/i;
+            const KEEP_OPEN_LABEL = 'keep-open';
+
+            const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+            const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+            const candidates = [];
+            const iterator = github.paginate.iterator(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              sort: 'created',
+              direction: 'asc',
+              per_page: 100,
+            });
+
+            for await (const { data: issues } of iterator) {
+              for (const issue of issues) {
+                if (issue.pull_request) continue;
+
+                const labels = issue.labels.map((l) => (typeof l === 'string' ? l : l.name));
+                if (labels.includes(KEEP_OPEN_LABEL)) continue;
+
+                const isQuickdraw = labels.includes('Quickdraw') || TITLE_RE.test(issue.title);
+                if (!isQuickdraw) continue;
+
+                if (Date.parse(issue.created_at) > cutoff) continue;
+
+                candidates.push(issue);
+              }
+            }
+
+            core.info(`${candidates.length} stale Quickdraw issue(s) older than ${days} day(s).`);
+
+            const batch = candidates.slice(0, maxIssues);
+            const closed = [];
+
+            for (const issue of batch) {
+              if (dryRun) {
+                core.info(`[dry run] would close #${issue.number} (opened ${issue.created_at})`);
+                closed.push(issue);
+                continue;
+              }
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body:
+                  `Closing this practice issue automatically after ${days} days. 🤠\n\n` +
+                  'Heads up: the **Quickdraw** achievement is only earned when *you* close ' +
+                  'the issue yourself within 5 minutes of opening it, so this automatic close ' +
+                  "doesn't count. Open a fresh one and close it straight away to earn it.\n\n" +
+                  'Nothing went wrong here — this just keeps the issue list tidy for everyone else.',
+              });
+
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+                state_reason: 'not_planned',
+              });
+
+              closed.push(issue);
+              core.info(`Closed #${issue.number}`);
+
+              // Stay under GitHub's secondary rate limit on content creation.
+              await sleep(2000);
+            }
+
+            const remaining = candidates.length - batch.length;
+            await core.summary
+              .addHeading('Stale Quickdraw issues', 3)
+              .addRaw(dryRun ? '**Dry run — nothing was closed.**\n\n' : '')
+              .addList([
+                `Stale (older than ${days} day(s)): ${candidates.length}`,
+                `${dryRun ? 'Would close' : 'Closed'} this run: ${closed.length}`,
+                `Left for the next run: ${remaining > 0 ? remaining : 0}`,
+              ])
+              .write();
